@@ -11,52 +11,45 @@ namespace AutoSearching
             try
             {
 
-                var psi = new ProcessStartInfo();
-                psi.UseShellExecute = true;
-
-                var totalSearchesAllowed = (150/5); //30 change later to gather from writeline as some searches may have been completed
-                var searchesAllowedPerGroup =  3;   //all change as this may change in the future
-                var groupAmount = (totalSearchesAllowed/searchesAllowedPerGroup); //10
-                var currentGroup = 0;
+                //var psi = new ProcessStartInfo();
+                //psi.UseShellExecute = true;
+                Console.WriteLine("How many points are left to be gained from searching?");
+                int totalPointsAllowed = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("How many points are gained per search");
+                int pointsLeftToGain = Convert.ToInt32(Console.ReadLine());
+                var totalSearchesAllowed = (totalPointsAllowed / pointsLeftToGain);
+                Console.WriteLine("How many searches are allowed at a time?");
+                var searchesAllowedPerGroup = Convert.ToInt32(Console.ReadLine());   
+                var groupAmount = (totalSearchesAllowed / searchesAllowedPerGroup); 
 
                 var waitTime = GetWaitTime();
                 var groupWaitTime = GetWaitTime("group");
 
-                var allSearchTerms = GetTodaysSearches(totalSearchesAllowed);
+                var todaysSearches = GetTodaysSearches(totalSearchesAllowed);
 
 
-                while (currentGroup > groupAmount)
+                for (int i = 0; i < totalSearchesAllowed; i++)
                 {
-                    
-                    //TODO: assign currentSearchTerm to next search term in index
+                    //psi.FileName = todaysSearches[i];
+                    //Process.Start(psi);
+                    //Console.WriteLine($"Current Search: {psi.FileName}");
 
-                    var currentSearchTerm = new List<string>();
-                    
-                    for (int currentSearchesInGroup = 0; currentSearchesInGroup < searchesAllowedPerGroup; currentSearchesInGroup++)
+                    var searchTerm = todaysSearches[i];
+
+                    Console.WriteLine($"Current search: {searchTerm}");
+                    if ((i + 1) % searchesAllowedPerGroup == 0)
                     {
-                        //TODO: open a browser to next search term in current group
-                        psi.FileName = currentSearchTerm[currentSearchesInGroup];
-
-                        //sets process start to shell and sets site from target
-                    
-
-                        //opens browser
-                        Process.Start(psi);
-                        currentSearchesInGroup++;
-
-                        //TODO: set next search term
-
-                        Thread.Sleep(groupWaitTime);
-
-
+                        Console.WriteLine($"Waiting: {waitTime}");
+                        Thread.Sleep(waitTime);
                     }
-                    currentGroup++;
-                    
-                    Thread.Sleep(waitTime);
-
-                    //TODO: repeat until all groups have been searched
-
+                    else
+                    {
+                        Console.WriteLine($"Waiting: {groupWaitTime}");
+                        Thread.Sleep(groupWaitTime);
+                    }
                 }
+
+
 
             }
             catch (Exception exception)
@@ -66,33 +59,28 @@ namespace AutoSearching
 
         }
 
-        private static List<string> GetTodaysSearches(int totalSearchesAllowed)
+        public static List<string> GetTodaysSearches(int totalSearchesAllowed)
         {
-            
-            //this is only a test to return something
-            return new List<string> { "one", "two", "three" };
 
+            //TODO: put actual search terms into the list
+            return new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+                        "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
+                        "twenty", "twentyone", "twentytwo", "twentythree", "twentyfour", "twentyfive", "twentysix", "twentyseven",
+                        "twentyeight", "twentynine","thirty"};
 
-            //TODO: use total search number to fill list with different searches according to total search number
-
-            /*
-            These were used initially, may remove once searches are filled
-              List.Add("http://www.bing.com");
-              return searchTerms;
-            */
         }
 
 
-        static int GetWaitTime(string? waitParameter=null)
+        static int GetWaitTime(string? waitParameter = null)
         {
             var waitTime = 0;
             if (waitParameter == "group")
-                waitTime = 8000;//may need to gather from user
+                waitTime = 8000;
 
-            else waitTime = 15000;//may need to gather from user
+            else waitTime = 150000;
 
             return waitTime;
         }
-        
+
     }
 }
